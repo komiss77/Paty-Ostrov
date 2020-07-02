@@ -1,0 +1,6 @@
+name: PartyAndFriends
+version: 1.0
+author: komiss77
+depend: [BungeeAuth]
+main: ru.ostrov77.friends.bungee.MainB
+description: A party and friends plugin

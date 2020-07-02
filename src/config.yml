@@ -1,0 +1,10 @@
+load_friends: false
+give_head: false
+head_slot: 1
+hide_mode: false
+give_hideitem: false
+hide_slot: 8
+load_party: true
+give_partyitem: false
+party_slot: 7
+

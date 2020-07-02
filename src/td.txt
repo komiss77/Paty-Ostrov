@@ -1,0 +1,42 @@
+
+
+еще бы сделать подарок другу типа что бы ему в чат написалось что такой то сделал подарок ну там как нибудь красиво
+сделайте что бы в др можно было указывать информацию типа когда день рождение,вк,сколько лет и т д,
+что бы можно было поздравлять друзей с днем рождения за деньги,и подарки дарить за деньги,
+
+
+  pipboy_rigth_click_command: profile
+  pipboy_left_click_command: serv
+  pipboy_name: §6ПКМ§e-профиль §2ЛКМ§a-сервера
+
+жестко залагивает при загрузке голов
+
+ЧАт только друзья команда система
+
+команда party count
+
+если pp вдруг null, проверить уго друзей-переместить в оффлайн, и удалить
+
+друзья - если друга нет по базе острова, удалять (фильтровать по all_users)
+
+
+
+
+
+меню не открывал, а вылезло
+com.mojang.authlib.exceptions.AuthenticationException: The client has sent too many requests within a certain amount of time
+	at ru.ostrov77.friends.spigot.listener.PlayerListenerS.onBungeeDataRecieved(PlayerListenerS.java:87) ~[?:?]
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:1.8.0_222]
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[?:1.8.0_222]
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:1.8.0_222]
+	at java.lang.reflect.Method.invoke(Method.java:498) ~[?:1.8.0_222]
+	at org.bukkit.plugin.java.JavaPluginLoader$1.execute(JavaPluginLoader.java:316) ~[lobby0.jar:git-Spigot-56f8471-ccd47a5]
+	at org.bukkit.plugin.RegisteredListener.callEvent(RegisteredListener.java:70) ~[lobby0.jar:git-Spigot-56f8471-ccd47a5]
+	at org.bukkit.plugin.SimplePluginManager.fireEvent(SimplePluginManager.java:529) ~[lobby0.jar:git-Spigot-56f8471-ccd47a5]
+	at org.bukkit.plugin.SimplePluginManager.callEvent(SimplePluginManager.java:514) ~[lobby0.jar:git-Spigot-56f8471-ccd47a5]
+	at ru.komiss77.Objects.Oplayer.bungeeDataInject(Oplayer.java:200) ~[?:?]
+	at ru.komiss77.Listener.OstrovChanelListener.onChanelMsg(OstrovChanelListener.java:29) ~[?:?]
+
+
+
+

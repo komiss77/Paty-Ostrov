@@ -1,0 +1,9 @@
+api-version: 1.13 
+name: PartyAndFriends
+main: ru.ostrov77.friends.spigot.MainS
+version: 1.0
+load: POSTWORLD
+author: Komiss77
+
+depend: [Ostrov]
+

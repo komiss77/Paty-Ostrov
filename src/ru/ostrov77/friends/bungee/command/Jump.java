@@ -80,7 +80,7 @@ public class Jump  {
             sender.sendMessage(new TextComponent(MainB.friendsPrefix +"§5Интервал между запросами 10 секунд!"));
             return;
         }
-        ManagerB.getPFplayer(sender.getName()).last_jump_time=Auth.Единое_время()/1000;
+        ManagerB.getPFplayer(sender.getName()).last_jump_time=Auth.currentTimeSec();
         
         
         

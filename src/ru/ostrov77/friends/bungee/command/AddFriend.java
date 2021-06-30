@@ -81,7 +81,7 @@ public class AddFriend {
             sender.sendMessage(new TextComponent(MainB.friendsPrefix +"§5Интервал между предложениями 10 секунд!"));
             return;
         }
-        ManagerB.getPFplayer(sender.getName()).last_msg_time=Auth.Единое_время()/1000;
+        ManagerB.getPFplayer(sender.getName()).last_msg_time=Auth.currentTimeSec();
         
         sender.sendMessage(new TextComponent(MainB.friendsPrefix +"Вы предложили дружить §b"+reciever));
         

@@ -9,11 +9,12 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import ru.komiss77.enums.Operation;
+import ru.komiss77.modules.player.Oplayer;
+import ru.komiss77.modules.player.profile.E_Prof;
+import ru.komiss77.modules.player.profile.mainHandler;
 
-import ru.komiss77.Enums.Action;
-import ru.komiss77.Objects.Oplayer;
-import ru.komiss77.ProfileMenu.E_Prof;
-import ru.komiss77.ProfileMenu.mainHandler;
+
 import ru.komiss77.utils.ItemBuilder;
 import ru.komiss77.utils.ItemUtils;
 import ru.ostrov77.friends.E_view;
@@ -85,11 +86,11 @@ public class ManagerS {
         
 //System.out.println("openFriendList 1");
         if (MainS.load_friends) {
-            OstrovChanelListener.request(op.getPlayer(), Action.PF_FRIENDS_ONLINE, "" );
-            OstrovChanelListener.request(op.getPlayer(), Action.PF_FRIENDS_OFFLINE, "" );
+            OstrovChanelListener.request(op.getPlayer(), Operation.PF_FRIENDS_ONLINE, "" );
+            OstrovChanelListener.request(op.getPlayer(), Operation.PF_FRIENDS_OFFLINE, "" );
 //System.out.println("openFriendList 2 p="+op.getPlayer().getName());
             
-            OstrovChanelListener.request(op.getPlayer(), Action.PF_CALLBACK_RUN, "", () -> {
+            OstrovChanelListener.request(op.getPlayer(), Operation.PF_CALLBACK_RUN, "", () -> {
 //System.out.println("!!!+++++++++++ Runnable ");
                 if (pfp.online_friends.isEmpty() && pfp.offline_friends.isEmpty()) {//пока еще нет
                     op.profile.setItem(22, ItemUtils.friend_empty.clone());
@@ -137,8 +138,8 @@ public class ManagerS {
                 op.getPlayer().updateInventory();
             });
             if (MainS.hide_mode) {
-                OstrovChanelListener.request(op.getPlayer(), Action.PF_FRIEND_SETTINGS, "" );
-                OstrovChanelListener.request(op.getPlayer(), Action.PF_CALLBACK_RUN, "", () -> {
+                OstrovChanelListener.request(op.getPlayer(), Operation.PF_FRIEND_SETTINGS, "" );
+                OstrovChanelListener.request(op.getPlayer(), Operation.PF_CALLBACK_RUN, "", () -> {
                     pfp.updateViewMode(false);
                  });
             }
@@ -148,8 +149,8 @@ public class ManagerS {
     public static void openFriendSettings(final Player p, final Oplayer op) {
         clean(op.profile);
         final PFplayerS pfp=getPFplayer(op.nik);
-            OstrovChanelListener.request(op.getPlayer(), Action.PF_FRIEND_SETTINGS, "" );
-            OstrovChanelListener.request(op.getPlayer(), Action.PF_CALLBACK_RUN, "", () -> {
+            OstrovChanelListener.request(op.getPlayer(), Operation.PF_FRIEND_SETTINGS, "" );
+            OstrovChanelListener.request(op.getPlayer(), Operation.PF_CALLBACK_RUN, "", () -> {
 //System.out.println("!!!+++++++++++ openFriendSettings ");
                 for (F_set set_:F_set.values()) {
 //System.out.println("-- set="+set_.toString()+" curr="+pfp.getIntSettings(set_));
@@ -230,10 +231,10 @@ public class ManagerS {
         
 //System.out.println("openFriendList 1");
         if (MainS.load_party) {
-            OstrovChanelListener.request(op.getPlayer(), Action.PF_PARTY_MEMBER, "" );
+            OstrovChanelListener.request(op.getPlayer(), Operation.PF_PARTY_MEMBER, "" );
 //System.out.println("openFriendList 2 p="+op.getPlayer().getName());
             
-            OstrovChanelListener.request(op.getPlayer(), Action.PF_CALLBACK_RUN, "", () -> {
+            OstrovChanelListener.request(op.getPlayer(), Operation.PF_CALLBACK_RUN, "", () -> {
 //System.out.println("!!!+++++++++++ Runnable ");
                 if (op.getPartyMembers().isEmpty()) {//пока еще нет
                     op.profile.setItem(22, ItemUtils.party_empty.clone());
@@ -290,8 +291,8 @@ public class ManagerS {
     public static void openPartySettings(final Player p, final Oplayer op) {
         clean(op.profile);
         final PFplayerS pfp=getPFplayer(op.nik);
-            OstrovChanelListener.request(op.getPlayer(), Action.PF_PARTY_SETTINGS, "" );
-            OstrovChanelListener.request(op.getPlayer(), Action.PF_CALLBACK_RUN, "", () -> {
+            OstrovChanelListener.request(op.getPlayer(), Operation.PF_PARTY_SETTINGS, "" );
+            OstrovChanelListener.request(op.getPlayer(), Operation.PF_CALLBACK_RUN, "", () -> {
 //System.out.println("!!!+++++++++++ openFriendSettings ");
                 for (P_set p_set:P_set.values()) {
                     injectPartySettingsItem(op, p_set, pfp.getPartySettings(p_set));

@@ -11,6 +11,7 @@ import ru.ostrov77.friends.F_set;
 import ru.ostrov77.friends.bungee.ManagerB;
 import ru.ostrov77.friends.bungee.PFplayerB;
 import ru.ostrov77.auth.bungee.Auth;
+import ru.ostrov77.auth.bungee.Managers.QuerryManager;
 
 
 
@@ -108,7 +109,7 @@ public class MsgSend {
             message.setHoverEvent( new HoverEvent( HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("§5§oКлик-написать ещё!").create() ) );
             sender.sendMessage(message);
             
-            ManagerB.getPFplayer(sender.getName()).last_msg_time=Auth.Единое_время()/1000;
+            ManagerB.getPFplayer(sender.getName()).last_msg_time=Auth.currentTimeSec();
             
             
         } else {        //off
@@ -120,7 +121,7 @@ public class MsgSend {
             final String msg=message_from_args(args, start_pos, false);
             
             ManagerB.trySengOflineMsg(sender,reciever,msg);
-            ManagerB.getPFplayer(sender.getName()).last_offmsg_time=Auth.Единое_время()/1000;
+            ManagerB.getPFplayer(sender.getName()).last_offmsg_time=Auth.currentTimeSec();
             
         }
         

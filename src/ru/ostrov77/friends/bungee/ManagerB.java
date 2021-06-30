@@ -13,6 +13,7 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.hover.content.Text;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import ru.ostrov77.auth.bungee.Auth;
@@ -96,7 +97,7 @@ public class ManagerB {
             //FM addFriend : Column count doesn't match value count at row 1  INSERT INTO `fr_friends` (`f1`, `f2`) VALUES ('cccc', 'cccc');
             PreparedStatement pst = null;
             try { 
-                pst= Auth.GetConnection().prepareStatement("INSERT INTO `ostrov77`.`fr_friends` (`f1`, `f2`) values (\'"+кто+"\', \'"+кого+"\') " );
+                pst= Auth.GetConnection().prepareStatement("INSERT INTO `fr_friends` (`f1`, `f2`) values (\'"+кто+"\', \'"+кого+"\') " );
                 pst.executeUpdate();
                 
                 
@@ -121,7 +122,7 @@ public class ManagerB {
         MainB.getInstance().getProxy().getScheduler().runAsync(MainB.getInstance(), () -> {
             PreparedStatement pst = null;
             try {
-                pst = Auth.GetConnection().prepareStatement("DELETE FROM `ostrov77`.`fr_friends` WHERE (f1 = \'"+кто+"\' AND f2=\'"+кого+"\') OR (f1 = \'"+кого+"\' AND f2=\'"+кто+"\') ");
+                pst = Auth.GetConnection().prepareStatement("DELETE FROM `fr_friends` WHERE (f1 = \'"+кто+"\' AND f2=\'"+кого+"\') OR (f1 = \'"+кого+"\' AND f2=\'"+кто+"\') ");
                 pst.execute();
                 
                 
@@ -262,7 +263,7 @@ public class ManagerB {
             
             PreparedStatement pst = null;
             try {
-                pst = Auth.GetConnection().prepareStatement("INSERT INTO `ostrov77`.`fr_settings` (`name`, `settings`, `pset`) VALUES " 
+                pst = Auth.GetConnection().prepareStatement("INSERT INTO `fr_settings` (`name`, `settings`, `pset`) VALUES " 
                        + "('"+exit.nik+"','"+fr_set+"','"+p_set+"') " + 
                        "ON DUPLICATE KEY UPDATE " 
                        + "`settings`='"+fr_set+"', `pset`='"+p_set+"' ");
@@ -302,13 +303,13 @@ public class ManagerB {
 //************************************************ СООБЩЕНИЯ ************************************************
     
     public static boolean msgCoolDown(final String name, final int sec) {
-        return !(Auth.Единое_время()/1000 - getPFplayer(name).last_msg_time > sec);
+        return !(Auth.currentTimeSec() - getPFplayer(name).last_msg_time > sec);
     }
     public static boolean msgTpCoolDown(final String name, final int sec) {
-        return !(Auth.Единое_время()/1000 - getPFplayer(name).last_jump_time > sec);
+        return !(Auth.currentTimeSec() - getPFplayer(name).last_jump_time > sec);
     }
     public static boolean msgOffCoolDown(final String name, final int sec) {
-        return !(Auth.Единое_время()/1000 - getPFplayer(name).last_offmsg_time > sec);
+        return !(Auth.currentTimeSec() - getPFplayer(name).last_offmsg_time > sec);
     }
 
     public static void trySengOflineMsg(final ProxiedPlayer sender, final String reciever, final String msg) {
@@ -316,10 +317,10 @@ public class ManagerB {
             boolean deny_off_msg=false;
             
             try (Statement stmt = Auth.GetConnection().createStatement(); //SELECT 'id' FROM `fr_settings` WHERE `name`='komiss77' AND`settings` LIKE '%10_1%' 
-                 //ResultSet rs = stmt.executeQuery("select `offlinemsg` from `ostrov77`.`fr_settings` WHERE name='"+reciever+"' AND `offlinemsg`='1' ")) {
-                    ResultSet rs = stmt.executeQuery("SELECT 'id' FROM `ostrov77`.`fr_settings` WHERE `name`='"+reciever+"' AND `settings` LIKE '%"+String.valueOf(F_set.СООБЩЕНИЯ_ОФФЛАЙН.tag)+"_0%' ")) {
+                 //ResultSet rs = stmt.executeQuery("select `offlinemsg` from `fr_settings` WHERE name='"+reciever+"' AND `offlinemsg`='1' ")) {
+                    ResultSet rs = stmt.executeQuery("SELECT 'id' FROM `fr_settings` WHERE `name`='"+reciever+"' AND `settings` LIKE '%"+String.valueOf(F_set.СООБЩЕНИЯ_ОФФЛАЙН.tag)+"_0%' ")) {
                     deny_off_msg=rs.next();
-//System.out.print("res="+deny_off_msg+" query=SELECT 'id' FROM `ostrov77`.`fr_settings` WHERE `name`='"+reciever+"' AND `settings` LIKE '%"+String.valueOf(F_set.СООБЩЕНИЯ_ОФФЛАЙН.tag)+"_0%' ");
+//System.out.print("res="+deny_off_msg+" query=SELECT 'id' FROM `fr_settings` WHERE `name`='"+reciever+"' AND `settings` LIKE '%"+String.valueOf(F_set.СООБЩЕНИЯ_ОФФЛАЙН.tag)+"_0%' ");
                     rs.close();
                     stmt.close();
             } catch (SQLException ex) { 
@@ -327,11 +328,11 @@ public class ManagerB {
             }
             
             if (!deny_off_msg) {
-                try (PreparedStatement pst = Auth.GetConnection().prepareStatement("insert into `ostrov77`.`fr_messages` values (?, ?, ?, ?)")) {
+                try (PreparedStatement pst = Auth.GetConnection().prepareStatement("insert into `fr_messages` values (?, ?, ?, ?)")) {
                     pst.setString(1, reciever);
                     pst.setString(2, sender.getName());
                     pst.setString(3, msg);
-                    pst.setLong(4, Auth.Единое_время()/1000);
+                    pst.setLong(4, Auth.currentTimeSec());
                     pst.executeUpdate();
                 } catch (SQLException ex) { 
                     MainB.log_err("FM trySengOflineMsg 2 : "+ex.getMessage());
@@ -359,11 +360,11 @@ public class ManagerB {
             TextComponent msg=null;
             
             try (Statement stmt = Auth.GetConnection().createStatement(); 
-                 ResultSet rs = stmt.executeQuery("select * from `ostrov77`.`fr_messages` WHERE `reciever`='"+pp.getName()+"' LIMIT 1 ")) {
+                 ResultSet rs = stmt.executeQuery("select * from `fr_messages` WHERE `reciever`='"+pp.getName()+"' LIMIT 1 ")) {
                     if(rs.next()) {
                         time=rs.getInt("time");
                         msg=new TextComponent("§6Сообщение от §e"+rs.getString("sender")+" §e: §f"+rs.getString("message")+" §8<клик-следущее");
-                        msg.setHoverEvent(new HoverEvent( HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("§5§oКлик - читать следущее \n§7Отправлено: §f"+time ).create() ));
+                        msg.setHoverEvent(new HoverEvent( HoverEvent.Action.SHOW_TEXT, new Text("§5§oКлик - читать следущее \n§7Отправлено: §f"+time ) ));
                         msg.setClickEvent( new ClickEvent( ClickEvent.Action.RUN_COMMAND, "/fr mread" ) );
                     }
                     rs.close();
@@ -375,7 +376,7 @@ public class ManagerB {
             
             
             if (time>0) {
-                try (PreparedStatement pst = Auth.GetConnection().prepareStatement("DELETE FROM `ostrov77`.`fr_messages` WHERE `reciever`='"+pp.getName()+"' AND`time`='"+time+"' ")) {
+                try (PreparedStatement pst = Auth.GetConnection().prepareStatement("DELETE FROM `fr_messages` WHERE `reciever`='"+pp.getName()+"' AND`time`='"+time+"' ")) {
                     pst.executeUpdate();
                 } catch (SQLException ex) { 
                     MainB.log_err("FM readOfflineMsg 2 : "+ex.getMessage());

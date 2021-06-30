@@ -5,6 +5,7 @@ import java.util.Arrays;
 
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -17,8 +18,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import ru.komiss77.ApiOstrov;
-import ru.komiss77.Events.BungeeDataRecieved;
-import ru.komiss77.Ostrov;
+import ru.komiss77.enums.Operation;
+import ru.komiss77.events.BungeeDataRecieved;
 
 import ru.komiss77.utils.ItemBuilder;
 import ru.komiss77.utils.ItemUtils;
@@ -77,18 +78,18 @@ public class PlayerListenerS implements Listener {
     public void onBungeeDataRecieved(BungeeDataRecieved e) {
 //System.out.println("onBungeeDataRecieved Party");  
         if (MainS.load_friends) {
-            OstrovChanelListener.request(e.getPlayer(), ru.komiss77.Enums.Action.PF_FRIENDS_ONLINE, "" );
-            OstrovChanelListener.request(e.getPlayer(), ru.komiss77.Enums.Action.PF_FRIENDS_OFFLINE, "");
+            OstrovChanelListener.request(e.getPlayer(), Operation.PF_FRIENDS_ONLINE, "" );
+            OstrovChanelListener.request(e.getPlayer(), Operation.PF_FRIENDS_OFFLINE, "");
         }
         if (MainS.load_party) {
-            OstrovChanelListener.request(e.getPlayer(), ru.komiss77.Enums.Action.PF_PARTY_MEMBER, "");
+            OstrovChanelListener.request(e.getPlayer(), Operation.PF_PARTY_MEMBER, "");
         }
-        if (Ostrov.lobby_items.item_lobby_mode) {
+        if (ApiOstrov.getMenuItemManager().item_lobby_mode) {
             if (give_head) e.getPlayer().getInventory().setItem(head_slot, getSlotHead(e.getPlayer().getName()));
             if (give_hideitem) e.getPlayer().getInventory().setItem(hide_slot, hide_item.clone());
             if (give_partyitem) {
                 ItemStack flag=party_item.clone();
-                flag.setDurability((short)ApiOstrov.randInt(0, 15));
+                //flag.setDurability((short)ApiOstrov.randInt(0, 15));
                 e.getPlayer().getInventory().setItem(party_slot, flag);
             }
         } else {
@@ -96,7 +97,7 @@ public class PlayerListenerS implements Listener {
             if (give_hideitem) ItemUtils.Add_to_inv(e.getPlayer(), hide_slot, hide_item.clone(), false, false);
             if (give_partyitem) {
                 ItemStack flag=party_item.clone();
-                flag.setDurability((short)ApiOstrov.randInt(0, 15));
+                //flag.setDurability((short)ApiOstrov.randInt(0, 15));
                 ItemUtils.Add_to_inv(e.getPlayer(), party_slot, flag, false, false);
             }
         }
@@ -148,26 +149,27 @@ public class PlayerListenerS implements Listener {
     
     
 @EventHandler(ignoreCancelled = false, priority = EventPriority.MONITOR)
-    public void onInteractEntity(PlayerInteractEntityEvent e) {   
-        if ( e.getPlayer().getItemInHand()==null || !e.getPlayer().getItemInHand().hasItemMeta() || !e.getPlayer().getItemInHand().getItemMeta().hasDisplayName()) return;
-        final PFplayerS pfp=ManagerS.getPFplayer(e.getPlayer().getName());
+    public void onInteractEntity(PlayerInteractEntityEvent e) {  
+        final Player p = e.getPlayer();
+        if ( p.getInventory().getItemInMainHand()==null || !p.getInventory().getItemInMainHand().hasItemMeta() || !p.getInventory().getItemInMainHand().getItemMeta().hasDisplayName()) return;
+        final PFplayerS pfp=ManagerS.getPFplayer(p.getName());
         if (pfp.interact_cooldown()) return;
         
-        if ( MainS.load_friends && give_head && e.getPlayer().getItemInHand().getType()==Material.PLAYER_HEAD && e.getPlayer().getItemInHand().getItemMeta().getDisplayName().equals("§5Друзья")) {
+        if ( MainS.load_friends && give_head && p.getInventory().getItemInMainHand().getType()==Material.PLAYER_HEAD && p.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals("§5Друзья")) {
             e.setCancelled(true);
             if ( e.getRightClicked().getType()==EntityType.PLAYER ) {
                 //MessageS.request(e.getPlayer(), DataType.FRIEND_COMMAND, "add "+e.getRightClicked().getName() );
-                ApiOstrov.sendMessage(e.getPlayer(), ru.komiss77.Enums.Action.OSTROV_BUNGEE_CMD, "fr add "+e.getRightClicked().getName());
+                ApiOstrov.sendMessage(p, Operation.EXECUTE_BUNGEE_CMD, p.getName(), "fr add "+e.getRightClicked().getName());
             } else {
-                ApiOstrov.sendActionBarDirect(e.getPlayer(), "§fПравый клик на игрока - подружиться!");
+                ApiOstrov.sendActionBarDirect(p, "§fПравый клик на игрока - подружиться!");
             }
-        } else if ( MainS.load_party && give_partyitem && e.getPlayer().getItemInHand().getType()==party_item.getType() && e.getPlayer().getItemInHand().getItemMeta().getDisplayName().equals(party_item.getItemMeta().getDisplayName())) {
+        } else if ( MainS.load_party && give_partyitem && p.getInventory().getItemInMainHand().getType()==party_item.getType() && p.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals(party_item.getItemMeta().getDisplayName())) {
             e.setCancelled(true);
             if ( e.getRightClicked().getType()==EntityType.PLAYER ) {
-                if (e.getPlayer().isSneaking()) ApiOstrov.sendMessage(e.getPlayer(), ru.komiss77.Enums.Action.OSTROV_BUNGEE_CMD, "party accept "+e.getRightClicked().getName());//MessageS.request(e.getPlayer(), DataType.PARTY_COMMAND, "accept "+e.getRightClicked().getName() );
-                else ApiOstrov.sendMessage(e.getPlayer(), ru.komiss77.Enums.Action.OSTROV_BUNGEE_CMD, "party invite "+e.getRightClicked().getName());//MessageS.request(e.getPlayer(), DataType.PARTY_COMMAND, "invite "+e.getRightClicked().getName() );
+                if (p.isSneaking()) ApiOstrov.sendMessage(p, Operation.EXECUTE_BUNGEE_CMD, p.getName(), "party accept "+e.getRightClicked().getName());//MessageS.request(e.getPlayer(), DataType.PARTY_COMMAND, "accept "+e.getRightClicked().getName() );
+                else ApiOstrov.sendMessage(p, Operation.EXECUTE_BUNGEE_CMD, p.getName(), "party invite "+e.getRightClicked().getName());//MessageS.request(e.getPlayer(), DataType.PARTY_COMMAND, "invite "+e.getRightClicked().getName() );
             } else {
-                ApiOstrov.sendActionBarDirect(e.getPlayer(), "§fПКМ-пригласить, Shifh+ПКМ-принять");
+                ApiOstrov.sendActionBarDirect(p, "§fПКМ-пригласить, Shifh+ПКМ-принять");
             }
         }
         

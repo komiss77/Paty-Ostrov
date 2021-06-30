@@ -3,9 +3,9 @@ package ru.ostrov77.friends.bungee.listener;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
+import ru.ostrov77.auth.bungee.BungeeChanelEvent;
+import ru.ostrov77.auth.bungee.Listener.BungeeMsgHandler;
 
-import ru.komiss77.bungee.BungeeChanellMsg;
-import ru.komiss77.bungee.OstrovBungeeChanelEvent;
 import ru.ostrov77.friends.F_set;
 import ru.ostrov77.friends.P_set;
 import ru.ostrov77.friends.bungee.MainB;
@@ -18,9 +18,10 @@ import ru.ostrov77.friends.bungee.PartyManager;
 public class MessageB implements Listener {
 
     
-
-@EventHandler
-    public void onMessage(final OstrovBungeeChanelEvent e) {
+    // BUNGEE !!!
+    
+    @EventHandler
+    public void onMessage(final BungeeChanelEvent e) {
         
         
         String res;
@@ -35,12 +36,12 @@ public class MessageB implements Listener {
                 }
                 res=res.replaceFirst(",", "");
                 //sendMessage(pp, type, String.join(",", pfb.online_friends));
-                BungeeChanellMsg.sendBungeeMessage(e.getPlayer(), e.action, res);
+                BungeeMsgHandler.sendBungeeMessage(e.getPlayer(), e.action, e.senderInfo, res);
                 return;
 
             case PF_FRIENDS_OFFLINE:
                 if (!checkPlayer(e)) return;
-                BungeeChanellMsg.sendBungeeMessage(e.getPlayer(), e.action, String.join(",", ManagerB.getPFplayer(e.getPlayer().getName()).offline_friends));
+                BungeeMsgHandler.sendBungeeMessage(e.getPlayer(), e.action, e.senderInfo, String.join(",", ManagerB.getPFplayer(e.getPlayer().getName()).offline_friends));
                 return;
                 
             //case FRIEND_COMMAND:
@@ -56,13 +57,13 @@ public class MessageB implements Listener {
                     if(set!=F_set.нет && ManagerB.getPFplayer(e.getPlayer().getName()).settings.get(set)!=set.default_value) res=res+","+set.tag+"_"+ManagerB.getPFplayer(e.getPlayer().getName()).settings.get(set);
                 }
                 res=res.replaceFirst(",", "");
-                BungeeChanellMsg.sendBungeeMessage(e.getPlayer(), e.action, res);
+                BungeeMsgHandler.sendBungeeMessage(e.getPlayer(), e.action, e.senderInfo, res);
                 return;
                 
             case PF_PARTY_MEMBER:
                 if (!checkPlayer(e)) return;
-                if (PartyManager.hasParty(e.getPlayer())) BungeeChanellMsg.sendBungeeMessage(e.getPlayer(), e.action, PartyManager.Get_player_party(e.getPlayer()).memberAndServerToString());
-                else BungeeChanellMsg.sendBungeeMessage(e.getPlayer(), e.action, "");
+                if (PartyManager.hasParty(e.getPlayer())) BungeeMsgHandler.sendBungeeMessage(e.getPlayer(), e.action, e.senderInfo, PartyManager.Get_player_party(e.getPlayer()).memberAndServerToString());
+                else BungeeMsgHandler.sendBungeeMessage(e.getPlayer(), e.action, e.senderInfo, "");
                 return;
                 
             //case PARTY_COMMAND:
@@ -78,7 +79,7 @@ public class MessageB implements Listener {
                     if(set!=P_set.нет && ManagerB.getPFplayer(e.getPlayer().getName()).party_settings.get(set)!=set.default_value) res=res+","+set.tag+"_"+(ManagerB.getPFplayer(e.getPlayer().getName()).party_settings.get(set)?"1":"0");
                 }
                 res=res.replaceFirst(",", "");
-                BungeeChanellMsg.sendBungeeMessage(e.getPlayer(), e.action, res);
+                BungeeMsgHandler.sendBungeeMessage(e.getPlayer(), e.action, e.senderInfo, res);
                 return;
                 
                 
@@ -86,7 +87,7 @@ public class MessageB implements Listener {
                 
             case PF_CALLBACK_RUN:
                 if (!checkPlayer(e)) return;
-                BungeeChanellMsg.sendBungeeMessage(e.getPlayer(), e.action, e.bungee_raw_data);
+                BungeeMsgHandler.sendBungeeMessage(e.getPlayer(), e.action, e.senderInfo, e.s1);
                 return;
                 
                 
@@ -96,9 +97,9 @@ public class MessageB implements Listener {
     }
 
     
-    private static boolean checkPlayer (final OstrovBungeeChanelEvent e) {
+    private static boolean checkPlayer (final BungeeChanelEvent e) {
         if (e.getPlayer()==null) {
-            MainB.log_err("ru.ostrov77.friends.bungee.listener.MessageB.onMessage pp=null,  from="+e.from+", raw="+e.bungee_raw_data);
+            MainB.log_err("onMessage pp=null,  from="+e.senderInfo+", raw="+e.s1);
             return false;
         }
         return true;

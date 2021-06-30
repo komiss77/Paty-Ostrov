@@ -13,21 +13,21 @@ import ru.ostrov77.friends.bungee.PartyManager;
 public class PlayerListenerB implements Listener {
 
     
-@EventHandler
+    @EventHandler
     public void AuthComplete(AuthCompleteEvent e) {
 //System.out.println("AuthComplete !!!!!!");
         ManagerB.getPFplayer(e.getPlayer());
     }
    
     
-@EventHandler
+    @EventHandler
     public void onPlayerDisconnect(PlayerDisconnectEvent e) {
         ManagerB.disconnect(e.getPlayer());
         if(PartyManager.hasParty(e.getPlayer())) PartyManager.removePlayerFromAllParty(e.getPlayer());
     }
     
     
-@EventHandler  //соединение с новым серв завершено
+    @EventHandler  //соединение с новым серв завершено
     public void ServerSwitchEvent(ServerSwitchEvent e) {
 //System.out.println("Friend: ServerSwitchEvent serv="+e.getPlayer().getServer().getInfo().getName());
         if ( ManagerB.exist(e.getPlayer().getName())) { //если загружен как друг, значит авторизацию прошел!

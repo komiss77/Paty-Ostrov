@@ -19,9 +19,10 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.hover.content.Text;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import ru.komiss77.enums.Data;
 
-import ru.komiss77.Enums.Data;
 import ru.ostrov77.auth.bungee.Auth;
 import ru.ostrov77.auth.bungee.Managers.BungeePM;
 import ru.ostrov77.auth.bungee.Managers.Database;
@@ -134,9 +135,9 @@ public class PFplayerB{
             final Bplayer bp=BungeePM.getBplayer(nik);
             List<String>split=new ArrayList<>();
             
-                if (bp.getData(Data.FRIEND_F_SETTINGS).contains("_")) {
+                if (bp.getDataString(Data.FRIEND_F_SETTINGS).contains("_")) {
                     //split = Arrays.asList(bp.getData(Data.FRIEND_F_SETTINGS).split(","));
-                    split.addAll(Arrays.asList(bp.getData(Data.FRIEND_F_SETTINGS).split(",")));
+                    split.addAll(Arrays.asList(bp.getDataString(Data.FRIEND_F_SETTINGS).split(",")));
                         F_set set;
                         int tag=0;
                         int value=0;
@@ -149,9 +150,9 @@ public class PFplayerB{
                 }
                 split.clear();
 //System.out.println("PFplayerB.Load() FRIEND_P_SETTINGS="+bp.getData(Data.FRIEND_P_SETTINGS));
-                if (bp.getData(Data.FRIEND_P_SETTINGS).contains("_")) {
+                if (bp.getDataString(Data.FRIEND_P_SETTINGS).contains("_")) {
                     //split = Arrays.asList(bp.getData(Data.FRIEND_P_SETTINGS).split(","));
-                    split.addAll(Arrays.asList(bp.getData(Data.FRIEND_P_SETTINGS).split(",")));
+                    split.addAll(Arrays.asList(bp.getDataString(Data.FRIEND_P_SETTINGS).split(",")));
                         P_set pset;
                         int tag=0;
                         int value=0;
@@ -164,13 +165,13 @@ public class PFplayerB{
                 }
                 split.clear();
                 
-                if (!bp.getData(Data.FRIEND_FRIENDS).isEmpty()) {
+                if (!bp.getDataString(Data.FRIEND_FRIENDS).isEmpty()) {
                     //split = Arrays.asList(bp.getData(Data.FRIEND_FRIENDS).split(","));
-                    split.addAll(Arrays.asList(bp.getData(Data.FRIEND_FRIENDS).split(",")));
+                    split.addAll(Arrays.asList(bp.getDataString(Data.FRIEND_FRIENDS).split(",")));
                     split.stream().forEach((fr_) -> {
 //System.out.println("Load() fr_="+fr_+" is_alive?="+Database.all_users.contains(fr_));                
                         
-                        if (Database.all_users.contains(fr_)) {
+                        if (Database.isRegistered(fr_)) {
                             if (ProxyServer.getInstance().getPlayer(fr_)!=null) online_friends.add(fr_);
                             else offline_friends.add(fr_);
                         } else {
@@ -189,10 +190,10 @@ public class PFplayerB{
 
                         try {
                             stmt = Auth.GetConnection().createStatement();
-                            rs = stmt.executeQuery("select COUNT(*) from `ostrov77`.`fr_messages` WHERE `reciever`=\'"+nik+"\' ");
+                            rs = stmt.executeQuery("select COUNT(*) from `fr_messages` WHERE `reciever`=\'"+nik+"\' ");
                                 if (rs.next() && rs.getInt("count(*)")>=1) {
                                     read = new TextComponent(MainB.friendsPrefix +"§f§kXXX§r §bВ вашем ящике есть письма! §e✉  §f("+rs.getInt("count(*)")+") §f§kXXX§r §8<клик-читать" );
-                                    read.setHoverEvent(new HoverEvent( HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("§5§oКлик - начать просмотр").create() ));
+                                    read.setHoverEvent(new HoverEvent( HoverEvent.Action.SHOW_TEXT, new Text("§5§oКлик - начать просмотр") ));
                                     read.setClickEvent( new ClickEvent( ClickEvent.Action.RUN_COMMAND, "/fr mread" ) );
                                 }
                                 rs.close();
@@ -213,9 +214,9 @@ public class PFplayerB{
                     });
                 }
                 
-                bp.resetData(Data.FRIEND_FRIENDS, false);
-                bp.resetData(Data.FRIEND_F_SETTINGS, false);
-                bp.resetData(Data.FRIEND_P_SETTINGS, false);
+                bp.setData(Data.FRIEND_FRIENDS, "", false);
+                bp.setData(Data.FRIEND_F_SETTINGS, "", false);
+                bp.setData(Data.FRIEND_P_SETTINGS, "", false);
                 loaded=true;
                 
                 ManagerB.loaded(PFplayerB.this);

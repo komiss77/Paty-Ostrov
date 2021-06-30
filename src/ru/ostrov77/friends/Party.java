@@ -11,9 +11,9 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
-import ru.komiss77.Enums.Action;
-import ru.komiss77.Enums.Data;
-import ru.komiss77.bungee.BungeeChanellMsg;
+import ru.komiss77.enums.Data;
+import ru.komiss77.enums.Operation;
+import ru.ostrov77.auth.bungee.Listener.BungeeMsgHandler;
 import ru.ostrov77.auth.bungee.Managers.BungeePM;
 import ru.ostrov77.friends.bungee.MainB;
 import ru.ostrov77.friends.bungee.ManagerB;
@@ -142,8 +142,8 @@ public class Party{
         final String membersAndServerList=memberAndServerToString();
         final String membersList=memberToString();
         members.stream().forEach((member) -> {
-            if (BungeePM.exist(member)) BungeePM.getBplayer(member).setData(Data.PARTY_MEBRERS, membersList, false);
-            if (ManagerB.exist(member)) BungeeChanellMsg.sendBungeeMessage(ManagerB.GetProxyPlayer(member), Action.PF_PARTY_MEMBER, membersAndServerList);
+            if (BungeePM.IsAuth(member)) BungeePM.getBplayer(member).setData(Data.PARTY_MEBRERS, membersList, false);
+            if (ManagerB.exist(member)) BungeeMsgHandler.sendBungeeMessage(ManagerB.GetProxyPlayer(member), Operation.PF_PARTY_MEMBER, member, membersAndServerList);
         });
     }
 

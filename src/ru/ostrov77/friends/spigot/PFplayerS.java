@@ -9,8 +9,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import ru.komiss77.ApiOstrov;
-import ru.komiss77.Enums.Action;
-import ru.komiss77.Managers.Timer;
+import ru.komiss77.Ostrov;
+import ru.komiss77.enums.Operation;
 
 import ru.ostrov77.friends.E_view;
 import ru.ostrov77.friends.F_set;
@@ -44,14 +44,14 @@ public class PFplayerS{
     public PFplayerS(final String nik_) {
         
         nik=nik_;
-        last_interact=Timer.Единое_время();
+        last_interact=ApiOstrov.currentTimeSec();
     }
 
     public boolean interact_cooldown() {
 //System.out.println("--interact_cooldown d="+(Timer.Единое_время()-last_interact)+"  res="+(Timer.Единое_время()-last_interact<1000));        
-        if (Timer.Единое_время()-last_interact<600) return true;
+        if (ApiOstrov.currentTimeSec()-last_interact<600) return true;
         else {
-            last_interact=Timer.Единое_время();
+            last_interact=ApiOstrov.currentTimeSec();
             return false;
         }
     }
@@ -96,14 +96,14 @@ public class PFplayerS{
         switch(view_mode) {
             case ВИДЕТЬ_ВСЕХ: 
                 Bukkit.getOnlinePlayers().stream().forEach((p)->{
-                    if (!p.getName().equals(nik)) actor.showPlayer(p);
+                    if (!p.getName().equals(nik)) actor.showPlayer(Ostrov.instance, p);
                 });
                 break;
             case ВИДЕТЬ_ДРУЗЕЙ_И_КОМАНДУ: 
                 Bukkit.getOnlinePlayers().stream().forEach((p)->{
                     if (!p.getName().equals(nik)) {
-                        if (ApiOstrov.isInParty(actor, p) || isFriend(p.getName())) actor.showPlayer(p);
-                        else actor.hidePlayer(p);
+                        if (ApiOstrov.isInParty(actor, p) || isFriend(p.getName())) actor.showPlayer(Ostrov.instance, p);
+                        else actor.hidePlayer(Ostrov.instance, p);
                     }
                     ApiOstrov.sendActionBar(nik, "§eНастройка видимости: "+view_mode.item_name);
                 });
@@ -111,8 +111,8 @@ public class PFplayerS{
             case ВИДЕТЬ_ДРУЗЕЙ: 
                 Bukkit.getOnlinePlayers().stream().forEach((p)->{
                     if (!p.getName().equals(nik)) {
-                        if (isFriend(p.getName())) actor.showPlayer(p);
-                        else actor.hidePlayer(p);
+                        if (isFriend(p.getName())) actor.showPlayer(Ostrov.instance, p);
+                        else actor.hidePlayer(Ostrov.instance, p);
                     }
                 });
                     ApiOstrov.sendActionBar(nik, "§eНастройка видимости: "+view_mode.item_name);
@@ -120,15 +120,15 @@ public class PFplayerS{
             case ВИДЕТЬ_КОМАНДУ: 
                 Bukkit.getOnlinePlayers().stream().forEach((p)->{
                     if (!p.getName().equals(nik)) {
-                        if (ApiOstrov.isInParty(actor, p)) actor.showPlayer(p);
-                        else actor.hidePlayer(p);
+                        if (ApiOstrov.isInParty(actor, p)) actor.showPlayer(Ostrov.instance, p);
+                        else actor.hidePlayer(Ostrov.instance, p);
                     }
                 });
                     ApiOstrov.sendActionBar(nik, "§eНастройка видимости: "+view_mode.item_name);
                 break;
             case СКРЫТЬ_ВСЕХ: 
                 Bukkit.getOnlinePlayers().stream().forEach((p)->{
-                    if (!p.getName().equals(nik)) actor.hidePlayer(p);
+                    if (!p.getName().equals(nik)) actor.hidePlayer(Ostrov.instance, p);
                 });
                     ApiOstrov.sendActionBar(nik, "§eНастройка видимости: "+view_mode.item_name);
                 break;
@@ -145,22 +145,22 @@ public class PFplayerS{
         
         switch(view_mode) {
             case ВИДЕТЬ_ВСЕХ: 
-                actor.showPlayer(target);
+                actor.showPlayer(Ostrov.instance, target);
                 break;
             case ВИДЕТЬ_ДРУЗЕЙ_И_КОМАНДУ: 
-                if (ApiOstrov.isInParty(actor, target) || isFriend(target.getName())) actor.showPlayer(target);
-                else actor.hidePlayer(target);
+                if (ApiOstrov.isInParty(actor, target) || isFriend(target.getName())) actor.showPlayer(Ostrov.instance, target);
+                else actor.hidePlayer(Ostrov.instance, target);
                 break;
             case ВИДЕТЬ_ДРУЗЕЙ: 
-                if (isFriend(target.getName())) actor.showPlayer(target);
-                else actor.hidePlayer(target);
+                if (isFriend(target.getName())) actor.showPlayer(Ostrov.instance, target);
+                else actor.hidePlayer(Ostrov.instance, target);
                 break;
             case ВИДЕТЬ_КОМАНДУ: 
-                if (ApiOstrov.isInParty(actor, target)) actor.showPlayer(target);
-                else actor.hidePlayer(target);
+                if (ApiOstrov.isInParty(actor, target)) actor.showPlayer(Ostrov.instance, target);
+                else actor.hidePlayer(Ostrov.instance, target);
                 break;
             case СКРЫТЬ_ВСЕХ: 
-                actor.hidePlayer(target);
+                actor.hidePlayer(Ostrov.instance, target);
                 break;
         }
         
@@ -168,7 +168,7 @@ public class PFplayerS{
 
     public void setViewMode(final E_view view) {
         //MessageS.request(GetBukkitPlayer(), DataType.FRIEND_COMMAND, "set "+F_set.ВИДЕТЬ_РЕЖИМ.toString()+" "+view.toString());
-        ApiOstrov.sendMessage(GetBukkitPlayer(), Action.OSTROV_BUNGEE_CMD, "fr set "+F_set.ВИДЕТЬ_РЕЖИМ.toString()+" "+view.toString());
+        ApiOstrov.sendMessage(GetBukkitPlayer(), Operation.EXECUTE_BUNGEE_CMD, nik, "fr set "+F_set.ВИДЕТЬ_РЕЖИМ.toString()+" "+view.toString());
         if (view.tag!=F_set.ВИДЕТЬ_РЕЖИМ.default_value) settings.put(F_set.ВИДЕТЬ_РЕЖИМ, view.tag);
         else settings.remove(F_set.ВИДЕТЬ_РЕЖИМ);
         updateViewMode(false);

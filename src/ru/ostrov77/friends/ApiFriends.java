@@ -12,9 +12,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import ru.komiss77.ApiOstrov;
-import ru.komiss77.Enums.Action;
-import ru.komiss77.Managers.PM;
-import ru.komiss77.Objects.Oplayer;
+import ru.komiss77.enums.Operation;
+import ru.komiss77.modules.player.Oplayer;
+import ru.komiss77.modules.player.PM;
 import ru.komiss77.utils.ItemUtils;
 
 import ru.ostrov77.friends.spigot.MainS;
@@ -81,7 +81,7 @@ public class ApiFriends {
                                 if (!e.isShiftClick()) {
                                     p.sendMessage(MainS.friendsPrefix+"§cДля безопасности, удаление - кл.Shift+клик !");
                                 } else {
-                                    ApiOstrov.sendMessage(p, Action.OSTROV_BUNGEE_CMD, "fr del "+nik);
+                                    ApiOstrov.sendMessage(p, Operation.EXECUTE_BUNGEE_CMD, p.getName(), "fr del "+nik);
                                     //MessageS.request(p, DataType.FRIEND_COMMAND, "del "+nik );
                                     op.profile.setItem(e.getSlot(), null);
                                     p.updateInventory();
@@ -93,21 +93,21 @@ public class ApiFriends {
                                     if (e.isShiftClick()) {
                                         final boolean blocked= lore.size()>=1 && lore.get(0).equals("§c✕ блокировка");
                                         if (blocked) {
-                                            ApiOstrov.sendMessage(p, Action.OSTROV_BUNGEE_CMD, "fr unblock "+nik);
+                                            ApiOstrov.sendMessage(p, Operation.EXECUTE_BUNGEE_CMD, p.getName(), "fr unblock "+nik);
                                             //MessageS.request(p, DataType.FRIEND_COMMAND, "unblock "+nik );
                                             lore.set(0, "");
                                         } else {
                                             //MessageS.request(p, DataType.FRIEND_COMMAND, "block "+nik );
-                                            ApiOstrov.sendMessage(p, Action.OSTROV_BUNGEE_CMD, "fr block "+nik);
+                                            ApiOstrov.sendMessage(p, Operation.EXECUTE_BUNGEE_CMD, p.getName(), "fr block "+nik);
                                             lore.set(0, "§c✕ блокировка");
                                         }
                                         upd_item=true;
                                     } else if (e.isLeftClick()) {
                                         p.closeInventory();
-                                        ApiOstrov.sendMessage(p, Action.OSTROV_BUNGEE_CMD, "fr jump "+nik);
+                                        ApiOstrov.sendMessage(p, Operation.EXECUTE_BUNGEE_CMD, p.getName(), "fr jump "+nik);
                                         //MessageS.request(p, DataType.FRIEND_COMMAND, "jump "+nik );
                                     } else {
-                                        ApiOstrov.sendMessage(p, Action.OSTROV_BUNGEE_CMD, "fr partyinvite "+nik);
+                                        ApiOstrov.sendMessage(p, Operation.EXECUTE_BUNGEE_CMD, p.getName(), "fr partyinvite "+nik);
                                         //MessageS.request(p, DataType.FRIEND_COMMAND, "partyinvite "+nik );
                                     }
                                 } else {
@@ -128,7 +128,7 @@ public class ApiFriends {
                             F_set set=F_set.настройка_по_названию_предмета(item_name);
                             if (set!=F_set.нет) {
                                 int value=F_set.nextValue(set, pfp.getFriendSettings(set));
-                                ApiOstrov.sendMessage(p, Action.OSTROV_BUNGEE_CMD, "fr set "+set.toString());
+                                ApiOstrov.sendMessage(p, Operation.EXECUTE_BUNGEE_CMD, p.getName(), "fr set "+set.toString());
                                 //MessageS.request(p, DataType.FRIEND_COMMAND, "set "+);
     //System.out.println("F_set="+set.toString()+" curr="+pfp.getIntSettings(set)+" new_value="+value);
                                 ManagerS.injectSettingsItem(op, set, value);
@@ -172,14 +172,14 @@ public class ApiFriends {
     } 
     
                                         //p.spigot().sendMessage(new ComponentBuilder("§e§l** §f§lКликните сюда, чтобы написать сообщение §e§l**")
-                                        //        .event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/fr m "+nik+" "))
+                                        //        .event(new ClickEvent(ClickEvent.Operation.RUN_COMMAND, "/fr m "+nik+" "))
                                         //        .create()
                                         //);
     
                                         //p.closeInventory();
                                         //MessageS.request(p, DataType.COMMAND_EXECUTE, "unblock<:>"+nik );
                                         //p.spigot().sendMessage(new ComponentBuilder("§e§l** §f§lКликните сюда, чтобы написать сообщение §e§l**")
-                                        //        .event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/fr m "+nik+" "))
+                                        //        .event(new ClickEvent(ClickEvent.Operation.SUGGEST_COMMAND, "/fr m "+nik+" "))
                                         //        .create()
                                         //);
 
@@ -221,7 +221,7 @@ public class ApiFriends {
                             p.sendMessage(MainS.friendsPrefix+"§cДля безопасности, удаление - кл.Shift+клик !");
                         } else {
                             //MessageS.request(p, DataType.PARTY_COMMAND, "kick "+nik );
-                            ApiOstrov.sendMessage(p, Action.OSTROV_BUNGEE_CMD, "party kick "+nik);
+                            ApiOstrov.sendMessage(p, Operation.EXECUTE_BUNGEE_CMD, p.getName(), "party kick "+nik);
                             op.profile.setItem(e.getSlot(), null);
                             p.updateInventory();
                         }
@@ -231,7 +231,7 @@ public class ApiFriends {
                         if (e.isShiftClick()) {
                             p.closeInventory();
                             //MessageS.request(p, DataType.PARTY_COMMAND, "leave" );
-                            ApiOstrov.sendMessage(p, Action.OSTROV_BUNGEE_CMD, "party leave");
+                            ApiOstrov.sendMessage(p, Operation.EXECUTE_BUNGEE_CMD, p.getName(), "party leave");
                         } else if (e.isLeftClick()) {
                             p.closeInventory();
                             p.spigot().sendMessage(new ComponentBuilder("§e§l** §f§lКликните сюда, чтобы написать команде§e§l**")
@@ -241,7 +241,7 @@ public class ApiFriends {
                             //MessageS.request(p, DataType.FRIEND_COMMAND, "jump "+nik );
                         } else {
                             //MessageS.request(p, DataType.PARTY_COMMAND, "leader "+nik );
-                            ApiOstrov.sendMessage(p, Action.OSTROV_BUNGEE_CMD, "party leader "+nik);
+                            ApiOstrov.sendMessage(p, Operation.EXECUTE_BUNGEE_CMD, p.getName(), "party leader "+nik);
                         }
                     }
 
@@ -250,7 +250,7 @@ public class ApiFriends {
                 if (set!=P_set.нет) {
                     boolean value = !pfp.getPartySettings(set);
                     //MessageS.request(p, DataType.PARTY_COMMAND, "set "+);
-                    ApiOstrov.sendMessage(p, Action.OSTROV_BUNGEE_CMD, "party set "+set.toString());
+                    ApiOstrov.sendMessage(p, Operation.EXECUTE_BUNGEE_CMD, p.getName(), "party set "+set.toString());
 //System.out.println("F_set="+set.toString()+" curr="+pfp.getIntSettings(set)+" new_value="+value);
                     ManagerS.injectPartySettingsItem(op, set, value);
                     if (value!=set.default_value) pfp.party_settings.put(set, value);

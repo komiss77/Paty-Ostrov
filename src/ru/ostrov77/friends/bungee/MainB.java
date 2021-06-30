@@ -38,7 +38,7 @@ public class MainB extends Plugin {
         
         friendsPrefix = "§a§lД§d§lр§c§lу§e§lз§9§lь§b§lя §f";
         partyPrefix = "§6[§eКоманда§6] §3";
-        allowed_chars = "@_!0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя";
+        //allowed_chars = "@_!0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя";
         
         fm=new ManagerB(this);
         party_manager=new PartyManager(this);
